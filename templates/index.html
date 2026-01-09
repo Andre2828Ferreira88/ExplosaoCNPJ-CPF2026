@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Leroy Merlin | Explodir CNPJ & CPF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap 5 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    />
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #78be20 0, #ffffff 50%, #f5f5f7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+        }
+
+        .iphone-card {
+            width: 100%;
+            max-width: 460px;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 32px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+            padding: 24px 22px 18px;
+            border: 1px solid #e5e5ea;
+            position: relative;
+        }
+
+        .leroy-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 11px;
+            border-radius: 999px;
+            background: #f0fdf4;
+            color: #166534;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .leroy-pill span.logo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #78be20;
+        }
+
+        .main-title {
+            margin-top: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .subtitle-text {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .segment-tabs {
+            margin-top: 14px;
+            padding: 4px;
+            border-radius: 999px;
+            background: #f3f4f6;
+            display: flex;
+            gap: 4px;
+        }
+
+        .segment-tabs .nav-link {
+            flex: 1;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 0;
+            color: #6b7280;
+            border: none;
+        }
+
+        .segment-tabs .nav-link.active {
+            background: #ffffff;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+            color: #064e3b;
+        }
+
+        .upload-zone {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 20px;
+            border: 1px dashed #cbd5e1;
+            background: #f9fafb;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .upload-zone:hover {
+            border-color: #78be20;
+            background: #f3faf3;
+        }
+
+        .btn-main {
+            border-radius: 999px;
+            padding: 9px 18px;
+            font-weight: 600;
+            border: none;
+            background: linear-gradient(135deg, #78be20, #4ade80);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.45);
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 30px rgba(34, 197, 94, 0.55);
+            color: #ffffff;
+        }
+
+        .btn-download {
+            border-radius: 999px;
+            padding: 7px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #111827;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        .btn-download:hover {
+            background: #f9fafb;
+            color: #111827;
+        }
+
+        .preview-wrapper {
+            margin-top: 12px;
+            max-height: 240px;
+            overflow: auto;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            padding: 10px;
+        }
+
+        .error-banner {
+            margin-top: 12px;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 12px;
+            background: #fef2f2;
+            color: #991b1b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-text {
+            margin-top: 10px;
+            font-size: 11px;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        /* Overlay de carregamento */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+        }
+
+        .loading-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .loading-text {
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .loading-sub {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay de carregamento -->
+    <div id="loading-overlay" class="loading-overlay d-none">
+        <div class="loading-box">
+            <div class="spinner-border text-success" role="status" aria-hidden="true"></div>
+            <div>
+                <div class="loading-text">Processando sua planilha...</div>
+                <div class="loading-sub">Isso pode levar alguns segundos.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="iphone-card">
+        <!-- Cabeçalho -->
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <div class="leroy-pill">
+                <span class="logo-dot"></span>
+                <span>Leroy Merlin • Explosor</span>
+            </div>
+            <span style="font-size: 11px; color:#6b7280;">v1.0</span>
+        </div>
+
+        <h1 class="main-title">Explodir CNPJ & CPF</h1>
+        <p class="subtitle-text">
+            Envie as planilhas com colunas específicas e receba um CSV já explodido
+            por <strong>Grupo</strong> e <strong>Área</strong>.
+        </p>
+
+        <!-- Abas (segment control) -->
+        <ul class="nav nav-pills segment-tabs mb-2" id="explodirTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link {% if not preview_cpf and not error_cpf %}active{% endif %}"
+                    id="cnpj-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#cnpj-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="cnpj-pane"
+                    aria-selected="{% if not preview_cpf and not error_cpf %}true{% else %}false{% endif %}"
+                >
+                    CNPJ
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link {% if preview_cpf or error_cpf %}active{% endif %}"
+                    id="cpf-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#cpf-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="cpf-pane"
+                    aria-selected="{% if preview_cpf or error_cpf %}true{% else %}false{% endif %}"
+                >
+                    CPF
+                </button>
+            </li>
+        </ul>
+
+        <!-- Conteúdo das abas -->
+        <div class="tab-content mt-2">
+            <!-- ABA CNPJ -->
+            <div
+                class="tab-pane fade {% if not preview_cpf and not error_cpf %}show active{% endif %}"
+                id="cnpj-pane"
+                role="tabpanel"
+                aria-labelledby="cnpj-tab"
+            >
+                <p class="subtitle-text mb-1">
+                    <strong>CNPJ:</strong> espera colunas como
+                    <b>Grupo de serviços</b> e <b>Áreas primárias</b>.
+                </p>
+
+                <form method="POST" enctype="multipart/form-data" data-loading-form>
+                    <div class="upload-zone">
+                        <div style="font-size: 26px; margin-bottom: 4px;">📄</div>
+                        <p style="margin-bottom: 6px; font-size: 13px; color:#4b5563;">
+                            Selecione a planilha de CNPJ
+                        </p>
+                        <input
+                            type="file"
+                            name="file_cnpj"
+                            accept=".csv,.xlsx,.xls"
+                            class="form-control form-control-sm mb-2"
+                            required
+                        />
+                        <small style="font-size: 11px; color:#6b7280;">
+                            Formatos aceitos: CSV, XLSX, XLS
+                        </small>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <button
+                            type="submit"
+                            name="upload_cnpj"
+                            value="1"
+                            class="btn-main"
+                        >
+                            Processar CNPJ
+                            <span>➜</span>
+                        </button>
+                    </div>
+                </form>
+
+                {% if error_cnpj %}
+                    <div class="error-banner">
+                        <span>⚠️</span>
+                        <span>{{ error_cnpj }}</span>
+                    </div>
+                {% endif %}
+
+                {% if download_cnpj %}
+                    <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <div style="font-size: 12px; color:#4b5563;">
+                            Planilha de CNPJ tratada!
+                        </div>
+                        <a href="{{ download_cnpj }}" class="btn-download">
+                            ⬇️ Baixar CSV
+                        </a>
+                    </div>
+
+                    {% if preview_cnpj %}
+                        <div class="preview-wrapper mt-2">
+                            {{ preview_cnpj | safe }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <!-- ABA CPF -->
+            <div
+                class="tab-pane fade {% if preview_cpf or error_cpf %}show active{% endif %}"
+                id="cpf-pane"
+                role="tabpanel"
+                aria-labelledby="cpf-tab"
+            >
+                <p class="subtitle-text mb-1">
+                    <strong>CPF:</strong> espera colunas como
+                    <b>Grupo de serviço</b> e <b>Área primária</b>.
+                </p>
+
+                <form method="POST" enctype="multipart/form-data" data-loading-form>
+                    <div class="upload-zone">
+                        <div style="font-size: 26px; margin-bottom: 4px;">📄</div>
+                        <p style="margin-bottom: 6px; font-size: 13px; color:#4b5563;">
+                            Selecione a planilha de CPF
+                        </p>
+                        <input
+                            type="file"
+                            name="file_cpf"
+                            accept=".csv,.xlsx,.xls"
+                            class="form-control form-control-sm mb-2"
+                            required
+                        />
+                        <small style="font-size: 11px; color:#6b7280;">
+                            Formatos aceitos: CSV, XLSX, XLS
+                        </small>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <button
+                            type="submit"
+                            name="upload_cpf"
+                            value="1"
+                            class="btn-main"
+                        >
+                            Processar CPF
+                            <span>➜</span>
+                        </button>
+                    </div>
+                </form>
+
+                {% if error_cpf %}
+                    <div class="error-banner">
+                        <span>⚠️</span>
+                        <span>{{ error_cpf }}</span>
+                    </div>
+                {% endif %}
+
+                {% if download_cpf %}
+                    <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <div style="font-size: 12px; color:#4b5563;">
+                            Planilha de CPF tratada!
+                        </div>
+                        <a href="{{ download_cpf }}" class="btn-download">
+                            ⬇️ Baixar CSV
+                        </a>
+                    </div>
+
+                    {% if preview_cpf %}
+                        <div class="preview-wrapper mt-2">
+                            {{ preview_cpf | safe }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="footer-text">
+            Feito por <strong>André Ferreira</strong> • Leroy Merlin<br />
+        </div>
+    </div>
+
+    <!-- Bootstrap JS + script da animação -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const forms = document.querySelectorAll("form[data-loading-form]");
+            const overlay = document.getElementById("loading-overlay");
+
+            forms.forEach(form => {
+                form.addEventListener("submit", function () {
+                    if (overlay) {
+                        overlay.classList.remove("d-none");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
